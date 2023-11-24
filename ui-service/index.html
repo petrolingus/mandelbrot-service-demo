@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<canvas id="canvas" width="1024" height="1024"></canvas>
+
+<script>
+    window.onload = function () {
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+
+        // http://localhost:63342/mandelbrot-service-demo/index.html?size=512&xc=-1&yc=0&scale=2&iterations=128&subdivision=3
+
+        const size = urlParams.get('size');
+        const xc = Number(urlParams.get('xc'));
+        const yc = Number(urlParams.get('yc'));
+        const scale = urlParams.get('scale');
+        const iterations = urlParams.get('iterations');
+        const subdivision = Number(urlParams.get('subdivision'));
+
+        const tilesInRow = Math.pow(2, subdivision);
+        const tileSize = size / tilesInRow;
+        const tileScale = scale / tilesInRow;
+
+        //draw images
+        for (let i = 0; i < tilesInRow; i++) {
+            const y = i * tileSize;
+            for (let j = 0; j < tilesInRow; j++) {
+
+                const x = j * tileSize;
+
+                const xcTile = (xc + j * tileScale) - (tilesInRow / 2.0 - 0.5) * tileScale;
+                const ycTile = (yc - i * tileScale) + (tilesInRow / 2.0 - 0.5) * tileScale;
+
+                const img = new Image();
+                img.onload = function () {
+                    // ctx.fillStyle = "#FF0000";
+                    // ctx.fillRect(x, y, tileSize, tileSize);
+                    // console.log(img);
+                    // ctx.drawImage(img, x, y, tileSize, tileSize);
+                };
+
+                // img.src = `http://localhost:8080/api/v1/generate-mandelbrot-tile?size=${tileSize}&xc=${xcTile}&yc=${ycTile}&scale=${tileScale}&iterations=${iterations}`;
+
+                fetch("http://localhost:8080/api/v1/generate-mandelbrot-tile", {
+                    method: "POST",
+                    body: JSON.stringify({
+                        size: tileSize,
+                        xc: xcTile,
+                        yc: ycTile,
+                        scale: tileScale,
+                        iterations: iterations,
+                    }),
+                    headers: {
+                        "Content-type": "application/json; charset=UTF-8"
+                    }
+                }).then((response) => console.log(response));
+            }
+        }
+    };
+</script>
+
+</body>
+</html>
