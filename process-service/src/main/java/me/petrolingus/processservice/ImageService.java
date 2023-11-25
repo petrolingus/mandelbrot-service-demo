@@ -33,15 +33,19 @@ public class ImageService {
     }
 
     // MediaType.IMAGE_JPEG_VALUE | MediaType.APPLICATION_OCTET_STREAM_VALUE
-    @PostMapping(value = "/api/v1/generate-mandelbrot-tile", produces = MediaType.IMAGE_PNG_VALUE)
-    public @ResponseBody byte[] generateMandelbrotTile(@RequestBody Params params) throws IOException {
+    @GetMapping(value = "/api/v1/generate-mandelbrot-tile", produces = MediaType.IMAGE_PNG_VALUE)
+    public @ResponseBody byte[] generateMandelbrotTile(@RequestParam int size,
+                                                       @RequestParam double xc,
+                                                       @RequestParam double yc,
+                                                       @RequestParam double scale,
+                                                       @RequestParam int iterations) throws IOException {
 
         if (ThreadLocalRandom.current().nextDouble() < breakdownProbability) {
             System.exit(-1);
         }
 
         // Generate image
-        int[] data = mandelbrot.getMandelbrotImage(params.size, params.xc, params.yc, params.scale, params.iterations, hue, saturation);
+        int[] data = mandelbrot.getMandelbrotImage(size, xc, yc, scale, iterations, hue, saturation);
 
         // Convert int array to byte array
         ByteBuffer byteBuffer = ByteBuffer.allocate(data.length * 4);
@@ -50,8 +54,8 @@ public class ImageService {
         byte[] array = byteBuffer.array();
 
         // Return result
-        BufferedImage image = new BufferedImage(params.size, params.size, BufferedImage.TYPE_INT_RGB);
-        image.setRGB(0, 0, params.size, params.size, data, 0, params.size);
+        BufferedImage image = new BufferedImage(size, size, BufferedImage.TYPE_INT_RGB);
+        image.setRGB(0, 0, size, size, data, 0, size);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         ImageIO.write(image, "png", os);
         InputStream in = new ByteArrayInputStream(os.toByteArray());
