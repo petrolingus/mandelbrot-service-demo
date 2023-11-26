@@ -26,7 +26,10 @@
         const iterations = urlParams.get('iterations');
         const subdivision = Number(urlParams.get('subdivision'));
 
-        const tilesInRow = Math.pow(2, subdivision);
+        let tilesInRow = Math.pow(2, subdivision);
+        if (tilesInRow > 8) {
+            tilesInRow = 8
+        }
         const tileSize = size / tilesInRow;
         const tileScale = scale / tilesInRow;
 
