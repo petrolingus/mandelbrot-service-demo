@@ -45,7 +45,7 @@
                     ctx.drawImage(img, x, y, tileSize, tileSize);
                 };
 
-                img.src = `http://localhost:8080/api/v1/generate-mandelbrot-tile?size=${size}&xc=${xcTile}&yc=${ycTile}&scale=${tileScale}&iterations=${iterations}`
+                img.src = `http://localhost:80/api/v1/generate-mandelbrot-tile?size=${tileSize}&xc=${xcTile}&yc=${ycTile}&scale=${tileScale}&iterations=${iterations}`
             }
         }
     };
