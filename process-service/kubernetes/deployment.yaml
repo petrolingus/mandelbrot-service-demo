@@ -5,7 +5,7 @@ metadata:
   labels:
     app.kubernetes.io/name: process-service
 spec:
-  replicas: 3
+  replicas: 8
   selector:
     matchLabels:
       app.kubernetes.io/name: process-service
@@ -20,7 +20,11 @@ spec:
           imagePullPolicy: Always
           env:
             - name: BREAKDOWN_PROBABILITY
-              value: '0.5'
+              value: '0.01'
           ports:
             - containerPort: 8080
               protocol: TCP
+#  strategy:
+#    type: RollingUpdate
+#    rollingUpdate:
+#      maxUnavailable: 1

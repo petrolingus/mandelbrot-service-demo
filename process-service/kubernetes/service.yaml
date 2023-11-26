@@ -3,6 +3,7 @@ kind: Service
 metadata:
   name: process-service
 spec:
+  type: ClusterIP
   selector:
     app.kubernetes.io/name: process-service
   ports:
